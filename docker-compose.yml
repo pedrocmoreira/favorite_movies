@@ -3,16 +3,15 @@ version: '3'
 services:
 # Serviço para banco de dados PostgreSQL
   db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+    image: bitnami/postgresql:latest
     ports:
-      - "5432:5432"
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=Favorite@movies!
+      - POSTGRES_DB=favorite_movies_db
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/bitnami/postgresql
 
 volumes:
-  pgdata:
+  postgres_data:
