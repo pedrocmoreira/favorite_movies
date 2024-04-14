@@ -7,13 +7,13 @@ export class User {
     id?: string;
 
     @Column()
-    nome?: string;
+    name?: string;
 
     @Column({ unique: true })
     email?: string;
 
     @Column()
-    senha?: string;
+    password?: string;
 
     @CreateDateColumn()
     created_at?: Date;

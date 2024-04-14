@@ -9,7 +9,9 @@ export class CreateUsersTable1713110935904 implements MigrationInterface {
                 { name: 'id', type: 'uuid', isPrimary: true, isGenerated: true, generationStrategy: 'increment' },
                 { name: 'name', type: 'varchar' },
                 { name: 'email', type: 'varchar', isUnique: true },
-                { name: 'password', type: 'varchar' }
+                { name: 'password', type: 'varchar' },
+                { name: 'created_at', type: 'timestamp', default: 'NOW()', },
+                { name: 'updated_at', type: 'timestamp', default: 'NOW()', }
             ]
         }));
     }

@@ -10,7 +10,9 @@ export class CreateMoviesTable1713111418175 implements MigrationInterface {
                 { name: 'title', type: 'varchar' },
                 { name: 'overview', type: 'text' },
                 { name: 'release_date', type: 'varchar' },
-                { name: 'poster_path', type: 'varchar' }
+                { name: 'poster_path', type: 'varchar' },
+                { name: 'created_at', type: 'timestamp', default: 'NOW()', },
+                { name: 'updated_at', type: 'timestamp', default: 'NOW()', }
             ]
         }));
     }

@@ -9,7 +9,9 @@ export class CreateUsersMoviesTable1713112098391 implements MigrationInterface {
                 { name: 'id', type: 'uuid', isPrimary: true, isGenerated: true, generationStrategy: 'increment' },
                 { name: 'id_user', type: 'uuid' },
                 { name: 'id_movie', type: 'uuid' },
-                { name: 'marked_as', type: 'varchar' }
+                { name: 'marked_as', type: 'varchar' },
+                { name: 'created_at', type: 'timestamp', default: 'NOW()', },
+                { name: 'updated_at', type: 'timestamp', default: 'NOW()', }
             ]
         }));
 

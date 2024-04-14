@@ -8,7 +8,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:create": "typeorm migration:create src/infra/database/migrations/default",
     "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/infra/database/index",
-    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -- -d src/infra/database/index.ts",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -d src/infra/database/index.ts",
     "seed": "tsx src/infra/database/seed/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
