@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev":"tsx watch src/infra/server.ts",
+    "dev": "tsx watch src/infra/server.ts",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:create": "typeorm migration:create src/infra/database/migrations/default",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d src/infra/database/index",
+    "migration:revert": "npx typeorm-ts-node-commonjs migration:revert -- -d src/infra/database/index.ts",
+    "seed": "tsx src/infra/database/seed/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +21,7 @@
     "express": "^4.19.2",
     "pg": "^8.11.5",
     "reflect-metadata": "^0.2.2",
+    "ts-node": "^10.9.2",
     "typeorm": "^0.3.20",
     "zod": "^3.22.4"
   },
