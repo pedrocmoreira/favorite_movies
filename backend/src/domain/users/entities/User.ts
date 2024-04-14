@@ -3,16 +3,16 @@ import { randomUUID as uuid} from 'node:crypto';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id?: string;
 
-    @Column()
+    @Column('varchar')
     name?: string;
 
-    @Column({ unique: true })
+    @Column({ type: 'varchar', unique: true })
     email?: string;
 
-    @Column()
+    @Column('varchar')
     password?: string;
 
     @CreateDateColumn()

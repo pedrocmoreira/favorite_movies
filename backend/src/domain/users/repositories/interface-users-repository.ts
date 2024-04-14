@@ -1,3 +1,4 @@
+import { User } from "../entities/User";
 
 export type CreateUserDTO = {
   name: string;
@@ -6,5 +7,5 @@ export type CreateUserDTO = {
 }
 
 export interface InterfaceUsersRepository {
-  create: CreateUserDTO
+  create({name, email, password}: CreateUserDTO): Promise<User>;
 }

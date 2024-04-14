@@ -1,29 +1,22 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { randomUUID as uuid} from 'node:crypto';
 
-
 @Entity('movies')
 export class Movie {
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn('uuid')
     id?: string;
 
-    @Column()
-    titulo?: string;
+    @Column('varchar')
+    title?: string;
 
-    @Column()
-    diretor?: string;
+    @Column('text')
+    overview?: string;
 
-    @Column()
-    sinopse?: string;
+    @Column('int')
+    release_date?: number;
 
-    @Column()
-    duracao?: number;
-
-    @Column()
-    ano_de_lancamento?: number;
-
-    @Column()
-    imagem?: string;
+    @Column('varchar')
+    poster_path?: string;
 
     @CreateDateColumn()
     created_at?: Date;
