@@ -1,5 +1,6 @@
+import 'dotenv/config';
 import { DataSource } from "typeorm";
-import { env } from "../env";
+
 
 // Entities
 import { Movie } from "../../domain/movies/entities/Movie";
@@ -13,11 +14,11 @@ import { CreateUsersMoviesTable1713112098391 } from "./migrations/1713112098391-
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: env.DATABASE_HOST,
-  port: Number(env.DATABASE_PORT),
-  username: env.DATABASE_USER,
-  password: env.DATABASE_PASSWORD,
-  database: env.DATABASE,
+  host: process.env.DATABASE_HOST,
+  port: Number(process.env.DATABASE_PORT),
+  username: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE,
 
   entities: [
     Movie,

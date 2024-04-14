@@ -1,30 +1,30 @@
 import express, { NextFunction, Response,  Request } from 'express';
-import {json} from 'body-parser';
-import { ZodError } from 'zod';
+import {errors} from 'celebrate';
+import 'express-async-error';
 import cors from 'cors';
 
-import { env } from './env';
 import { routes } from './http/routes';
+import { AppError } from './errors';
+import { error } from 'console';
 
 
 const app = express();
 
 app.use(cors());
 
-app.use(json());
+app.use(express.json());
 
 app.use(routes);
 
+app.use(errors());
+
 app.use(
   (error: Error, request: Request, response: Response, next: NextFunction) => {
-    if (error instanceof ZodError) {
-      return response.status(400).json({message: 'Validation error', issues: error.format()});
-    }
-
-    if(env.NODE_ENV !== 'production') {
-      console.error(error);
-    } else {
-      // #TODO: aplicar tratamento de erro para produção
+    if (error instanceof AppError) {
+      return response.status(error.statusCode).json({
+        status: 'error',
+        message: error.message,
+      });
     }
 
     return response.status(500).json({message: 'Internal server error.'});
