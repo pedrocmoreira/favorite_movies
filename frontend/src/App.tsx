@@ -1,8 +1,10 @@
-import './App.css'
+import { RouterProvider } from 'react-router-dom'
+import './global.css'
+import { router } from './pages/routes'
 
 export function App() {
 
   return (
-   <h1>hello world</h1>
+   <RouterProvider router={router}/>
   )
 }
