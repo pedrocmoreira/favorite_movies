@@ -21,7 +21,7 @@ export class User {
     @UpdateDateColumn()
     updated_at?: Date;
 
-    constructor(){
+    constructor(password: string){
       if(!this.id) {
         this.id = uuid()
       }

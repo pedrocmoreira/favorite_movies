@@ -1,7 +1,8 @@
 import { Router } from "express";
+import { Joi, Segments, celebrate } from "celebrate";
 
 import { create } from "./create";
-import { Joi, Segments, celebrate } from "celebrate";
+import { login } from "./login";
 
 const usersRouter = Router();
 
@@ -15,6 +16,17 @@ usersRouter.post('/create',
   }),
 (request, response, next) => {
   return create(request, response, next);
+});
+
+usersRouter.post('/login',
+  celebrate({
+    [Segments.BODY]: {
+      email: Joi.string().required(),
+      password: Joi.string().required(),
+    },
+  }),
+(request, response, next) => {
+  return login(request, response, next);
 });
 
 export { usersRouter }

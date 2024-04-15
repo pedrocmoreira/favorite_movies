@@ -11,12 +11,17 @@ export class UsersRepository implements InterfaceUsersRepository {
   constructor(){
     this.repository = AppDataSource.getRepository(User);
   }
+  
 
   async create({email, name, password}:CreateUserDTO): Promise<User>{
-    const user = this.repository.create({
+    const user = await this.repository.create({
       name, email, password
     });
 
     return this.repository.save(user);
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOneBy({email});
   }
 }

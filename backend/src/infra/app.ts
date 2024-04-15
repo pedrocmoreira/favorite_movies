@@ -1,11 +1,10 @@
-import express, { NextFunction, Response,  Request } from 'express';
-import {errors} from 'celebrate';
+import express, { NextFunction, Response, Request } from 'express';
+import { errors } from 'celebrate';
 import 'express-async-error';
 import cors from 'cors';
 
 import { routes } from './http/routes';
 import { AppError } from './errors';
-import { error } from 'console';
 
 
 const app = express();
@@ -27,7 +26,7 @@ app.use(
       });
     }
 
-    return response.status(500).json({message: 'Internal server error.'});
+    return response.status(500).json({ message: 'Internal server error.' });
   }
 )
 
