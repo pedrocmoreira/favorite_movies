@@ -109,7 +109,7 @@ export function MoviePosterArtwork({
               </Button>
             </DialogTrigger>
 
-            <MovieDetail open={isDetailsOpen} data={movie}/>
+            <MovieDetail open={isDetailsOpen} movieId={movie.id}/>
           </Dialog>
         </div>
         <p className="text-xs text-muted-foreground">Data de lançamente: {movie.release_date}</p>

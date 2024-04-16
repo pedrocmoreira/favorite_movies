@@ -9,11 +9,11 @@ import { useEffect, useState } from "react";
 import { MovieDetailDTO } from "@/dto/movie-details-dto";
 
 export interface MovieDetail {
-  data: MovieListProps;
+  movieId: number;
   open: boolean;
 }
 
-export function MovieDetail({ data, open }: MovieDetail) {
+export function MovieDetail({ movieId }: MovieDetail) {
   const [movie, setMovie] = useState<MovieDetailDTO>();
 
   function formatDate(date: string): string {
@@ -25,7 +25,7 @@ export function MovieDetail({ data, open }: MovieDetail) {
   }
 
   async function getMovieDetail() {
-    const response = await apiMovieDB(`/movie/${data.id}?language=pt-BR`, {
+    const { data } = await apiMovieDB(`/movie/${movieId}?language=pt-BR`, {
       method: 'GET',
       headers: {
         accept: 'application/json',
@@ -33,7 +33,7 @@ export function MovieDetail({ data, open }: MovieDetail) {
       }
     });
 
-    setMovie(response.data);
+    setMovie(data);
   }
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function MovieDetail({ data, open }: MovieDetail) {
           <div className="flex flex-row justify-between">
             <div>
               <DialogHeader>
-                {data.title}
+                {movie.title}
                 <DialogDescription>Resumo do filme</DialogDescription>
               </DialogHeader>
 
@@ -77,7 +77,7 @@ export function MovieDetail({ data, open }: MovieDetail) {
             </div>
 
             <img
-              src={`https://image.tmdb.org/t/p/original${data.poster_path}`}
+              src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
               className="h-60 rounded-sm  ml-10"
             />
 
@@ -86,7 +86,7 @@ export function MovieDetail({ data, open }: MovieDetail) {
           <div>
             <DialogDescription>Resumo</DialogDescription>
             <p>
-              {data.overview}
+              {movie.overview}
             </p>
           </div>
 
