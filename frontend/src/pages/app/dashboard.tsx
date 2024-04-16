@@ -7,6 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MoviePosterArtwork } from "@/components/movie-poster-artwork";
 
+import axios from 'axios';
+
+
+import { useEffect, useState } from "react";
+import { env } from "@/env";
+import { apiMovieDB } from "@/lib/axios";
+
 
 export interface Movie {
   name: string
@@ -14,60 +21,56 @@ export interface Movie {
   cover: string
 }
 
-const popularMovies: Movie[]= [
-  {
-    name: "Duna: Parte Dois",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-  },
-  {
-    name: "Kung Fu Panda 4",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
-  },
-  {
-    name: "Godzilla e Kong: O Novo Império",
-    release_date: "2024-02-27",   
-    cover:
-      "https://image.tmdb.org/t/p/original/tMefBSflR6PGQLv7WvFPpKLZkyk.jpg",
-  },
-  {
-    name: "Matador de Aluguel",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/h2xDLj6CtzItwQEFyBjIXh5z3QD.jpg",
-  },
-]
-const nowPlayingMovies: Movie[]= [
-  {
-    name: "Duna: Parte Dois",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
-  },
-  {
-    name: "Kung Fu Panda 4",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/kDp1vUBnMpe8ak4rjgl3cLELqjU.jpg",
-  },
-  {
-    name: "Godzilla e Kong: O Novo Império",
-    release_date: "2024-02-27",   
-    cover:
-      "https://image.tmdb.org/t/p/original/tMefBSflR6PGQLv7WvFPpKLZkyk.jpg",
-  },
-  {
-    name: "Matador de Aluguel",
-    release_date: "2024-02-27",
-    cover:
-      "https://image.tmdb.org/t/p/original/h2xDLj6CtzItwQEFyBjIXh5z3QD.jpg",
-  },
-]
+
+export interface MovieListProps {
+  adult: boolean
+  backdrop_path: string
+  genre_ids: number[]
+  id: number
+  original_language: string
+  original_title: string
+  overview: string
+  popularity: number
+  poster_path: string
+  release_date: string
+  title: string
+  video: boolean
+  vote_average: number
+  vote_count: number
+}
 
 export function Dashboard() {
+  const [topMovies, setTopMovies] = useState<MovieListProps[]>();
+  const [nowPlayingMovies, setNowPlayingMovies] = useState<MovieListProps[]>();
+
+  async function getTopMovies() {
+    const { data } = await apiMovieDB('/movie/popular?language=pt-BR', {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `${env.VITE_MOVIE_DATABASE_TOKEN}`
+      }
+    });
+
+    setTopMovies(data.results);
+  }
+
+  async function getNowPlayingMovies() {
+    const { data } = await apiMovieDB('/movie/now_playing?language=pt-BR', {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `${env.VITE_MOVIE_DATABASE_TOKEN}`
+      }
+    });
+
+    setNowPlayingMovies(data.results);
+  }
+
+  useEffect(() => {
+    getTopMovies();
+    getNowPlayingMovies();
+  }, [])
   return (
     <>
       <Helmet title="Dashboard" />
@@ -87,9 +90,8 @@ export function Dashboard() {
                           Filmes
                         </TabsTrigger>
                         <TabsTrigger value="favorites">Meus favoritos</TabsTrigger>
-                        <TabsTrigger value="watched" disabled>
-                          Asistidos
-                        </TabsTrigger>
+                        <TabsTrigger value="watched" disabled> Assistidos </TabsTrigger>
+                        <TabsTrigger value="watch-later" disabled> Assistir mais tarde </TabsTrigger>
                       </TabsList>
                     </div>
                     <TabsContent
@@ -110,9 +112,9 @@ export function Dashboard() {
                       <div className="relative">
                         <ScrollArea>
                           <div className="flex space-x-4 pb-4">
-                            {popularMovies.map((movie) => (
+                            {topMovies && topMovies.map((movie) => (
                               <MoviePosterArtwork
-                                key={movie.name}
+                                key={movie.title}
                                 movie={movie}
                                 className="w-[250px]"
                                 aspectRatio="portrait"
@@ -136,9 +138,9 @@ export function Dashboard() {
                       <div className="relative">
                         <ScrollArea>
                           <div className="flex space-x-4 pb-4">
-                            {nowPlayingMovies.map((movie) => (
+                            {nowPlayingMovies && nowPlayingMovies.map((movie) => (
                               <MoviePosterArtwork
-                                key={movie.name}
+                                key={movie.title}
                                 movie={movie}
                                 className="w-[150px]"
                                 aspectRatio="square"
@@ -153,7 +155,7 @@ export function Dashboard() {
                     </TabsContent>
                     <TabsContent
                       value="favorites"
-                      // className="h-full flex-col border-none p-0 data-[state=active]:flex"
+                    // className="h-full flex-col border-none p-0 data-[state=active]:flex"
                     >
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">

@@ -1,11 +1,7 @@
-import { Film, Home } from 'lucide-react'
-
-// import { AccountMenu } from './account-menu'
-// import { NavLink } from './nav-link'
+import { Film } from 'lucide-react'
 
 import { Separator } from './ui/separator'
 import { ThemeToggle } from './theme/theme-toggle'
-import { NavLink } from './nav-link'
 
 export function Header() {
   return (
@@ -15,12 +11,7 @@ export function Header() {
 
         <Separator orientation="vertical" className="h-6" />
 
-        <nav className="flex items-center space-x-4 lg:space-x-6">
-          <NavLink to="/">
-            <Home className="h-4 w-4" />
-            Inicio
-          </NavLink>
-        </nav>
+        <span className="font-semibold">Favorite Movies</span>
 
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />

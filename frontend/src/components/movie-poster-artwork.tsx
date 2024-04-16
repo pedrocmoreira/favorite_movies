@@ -9,11 +9,18 @@ import {
   // ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/context-menu"
-import { Movie } from "@/pages/app/dashboard"
+import { MovieListProps } from "@/pages/app/dashboard"
+
+import { parse, format } from 'date-fns';
+import { Search } from "lucide-react";
+import { Dialog, DialogTrigger } from "./ui/dialog";
+import { Button } from "./ui/button";
+import { useState } from "react";
+import { MovieDetail } from "./movie-detail";
 
 
 interface MoviePosterArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  movie: Movie
+  movie: MovieListProps
   aspectRatio?: "portrait" | "square"
   width?: number
   height?: number
@@ -27,14 +34,27 @@ export function MoviePosterArtwork({
   className,
   ...props
 }: MoviePosterArtworkProps) {
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+
+
+  function formatDate(data: string): string {
+
+    const dataParseada = parse(data, 'MM-dd-yyyy', new Date());
+
+
+    const dataFormatada = format(dataParseada, 'dd/MM/yyyy');
+
+    return dataFormatada;
+  }
+
   return (
     <div className={cn("space-y-3", className)} {...props}>
       <ContextMenu>
         <ContextMenuTrigger>
           <div className="overflow-hidden rounded-md">
             <img
-              src={movie.cover}
-              alt={movie.name}
+              src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
+              alt={movie.title}
               className={`h-auto w-auto object-cover transition-all hover:scale-105 ${aspectRatio === "portrait" ? "aspect-h-6 aspect-w-5" : "aspect-square"}`}
             />
           </div>
@@ -77,8 +97,21 @@ export function MoviePosterArtwork({
           <ContextMenuItem>Share</ContextMenuItem>
         </ContextMenuContent> */}
       </ContextMenu>
+
       <div className="space-y-1 text-sm">
-        <h3 className="font-medium leading-none">{movie.name}</h3>
+        <div className="flex flex-row justify-between">
+          <h3 className="font-medium leading-none">{movie.title}</h3>
+
+          <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+            <DialogTrigger>
+              <Button variant='outline' size='xss'>
+                <Search className="h-3 w-3" />
+              </Button>
+            </DialogTrigger>
+
+            <MovieDetail open={isDetailsOpen} data={movie}/>
+          </Dialog>
+        </div>
         <p className="text-xs text-muted-foreground">Data de lançamente: {movie.release_date}</p>
       </div>
     </div>

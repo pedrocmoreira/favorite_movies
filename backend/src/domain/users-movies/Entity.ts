@@ -14,5 +14,7 @@ export class UserMovie {
     id_movie?: Movie;
 
     @Column('varchar')
-    marked_as?: string;
+    marked_as?: string; // assitido - favorita - asistir depois 
+
+    // #TODO - adicionar uma coluna para cada status de marked
 }
