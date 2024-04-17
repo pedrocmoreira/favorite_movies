@@ -17,7 +17,6 @@ export class RegisterMovieUseCase {
   constructor(private moviesRepository: MoviesRepository) { }
 
   async execute({ user_id, movie_id, title, release_date, poster_path }: RegisterMovieUseCaseRequest): Promise<RegisterMovieUseCaseResponse> {
-    console.log('user_id', user_id);
 
     const movieWithSameId = await this.moviesRepository.findById(movie_id);
 
