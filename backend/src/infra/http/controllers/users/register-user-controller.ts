@@ -1,7 +1,7 @@
-import { UserAlreadyExistsError } from '@/domain/users/errors/user-already-exists-error'
-import { makeRegisterUseCase } from '@/domain/users/factories/make-register-user-use-case'
-import { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { z } from 'zod';
+import { UserAlreadyExistsError } from '@/domain/users/errors/user-already-exists-error';
+import { makeRegisterUseCase } from '@/domain/users/factories/make-register-user-use-case';
 
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {

@@ -2,11 +2,21 @@ import fastify from 'fastify';
 
 import { ZodError } from 'zod';
 import { env } from './env';
-import { appRoutes } from './infra/http/routes';
+import fastifyJwt from '@fastify/jwt';
+import { moviesRoutes } from './infra/http/controllers/movies/routes';
+import { usersRoutes } from './infra/http/controllers/users/routes';
 
 export const app = fastify();
 
-app.register(appRoutes);
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+  sign: {
+    expiresIn: '10m',
+  }
+});
+
+app.register(usersRoutes);
+app.register(moviesRoutes);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

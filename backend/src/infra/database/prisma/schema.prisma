@@ -9,45 +9,47 @@ datasource db {
 
 // Definição da tabela de usuários
 model User {
-  id            Int         @id @default(autoincrement()) @map(name: "id")
+  id            Int      @id @default(autoincrement()) @map(name: "id")
   name          String
-  email         String      @unique
+  email         String   @unique
   password_hash String
-  created_at    DateTime    @default(now())
-  updated_at    DateTime    @updatedAt()
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt()
   movies        Movie[]
-  UserMovie     UserMovie[]
 
   @@map("users")
 }
 
 // Definição da tabela de filmes
 model Movie {
-  id           Int         @id @default(autoincrement()) @map(name: "id")
+  id           Int      @id @map(name: "id")
   title        String
   release_date String
   poster_path  String
-  created_at   DateTime    @default(now())
-  updated_at   DateTime    @updatedAt()
-  users        UserMovie[]
-  User         User?       @relation(fields: [userId], references: [id])
-  userId       Int?
+  watched      Boolean  @default(false)
+  favorite     Boolean  @default(false)
+  want_watch   Boolean  @default(false)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt()
+
+  user    User? @relation(fields: [user_id], references: [id])
+  user_id Int
 
   @@map("movies")
 }
 
 // Definição da tabela de associação entre Usuário e Filme
-model UserMovie {
-  id_user    Int
-  id_movie   Int
-  watched    Boolean
-  favorite   Boolean
-  want_watch Boolean
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt()
-  user       User     @relation(fields: [id_user], references: [id])
-  movie      Movie    @relation(fields: [id_movie], references: [id])
+// model UserMovie {
+//   id_user    Int
+//   id_movie   Int
+//   watched    Boolean
+//   favorite   Boolean
+//   want_watch Boolean
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt()
+//   user       User     @relation(fields: [id_user], references: [id])
+//   movie      Movie    @relation(fields: [id_movie], references: [id])
 
-  @@id([id_user, id_movie])
-  @@map("users_movies")
-}
+//   @@id([id_user, id_movie])
+//   @@map("users_movies")
+// }
