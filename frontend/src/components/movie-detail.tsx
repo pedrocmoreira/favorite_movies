@@ -7,6 +7,7 @@ import { apiMovieDB } from "@/lib/axios";
 import { env } from "@/env";
 import { useEffect, useState } from "react";
 import { MovieDetailDTO } from "@/dto/movie-details-dto";
+import { formatDate } from "@/utils/format-date";
 
 export interface MovieDetail {
   movieId: number;
@@ -15,14 +16,6 @@ export interface MovieDetail {
 
 export function MovieDetail({ movieId }: MovieDetail) {
   const [movie, setMovie] = useState<MovieDetailDTO>();
-
-  function formatDate(date: string): string {
-    const dateParts = date.split('-');
-    const year = dateParts[0];
-    const month = dateParts[1];
-    const day = dateParts[2];
-    return `${day}/${month}/${year}`;
-  }
 
   async function getMovieDetail() {
     const { data } = await apiMovieDB(`/movie/${movieId}?language=pt-BR`, {
