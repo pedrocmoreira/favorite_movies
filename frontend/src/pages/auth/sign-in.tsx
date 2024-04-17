@@ -10,6 +10,7 @@ import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { api } from '@/lib/axios'
 
 const signInForm = z.object({
   email: z.string().email(),
@@ -36,7 +37,17 @@ export function SignIn() {
 
   async function handleSignIn(data: SignInForm) {
     try {
-      // await authenticate({ email: data.email })
+
+      console.log(data);
+      const response = await api('/users/authenticate', {
+        method: 'POST',
+        headers: {
+          'Content-Type':'application/json',
+        },
+        data
+      });
+
+      console.log(response);
 
       toast.success('Enviamos um link de autenticação para o seu e-mail', {
         action: {
@@ -76,7 +87,7 @@ export function SignIn() {
 
             <div className="space-y2">
               <Label htmlFor="email">Sua senha</Label>
-              <Input id="password" type="password" {...register('email')} />
+              <Input id="password" type="password" {...register('password')} />
             </div>
 
             <Button disabled={isSubmitting} className="w-full" type="submit">
