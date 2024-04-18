@@ -39,9 +39,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       localStorage.setItem('authToken', response.data.token);
       setIsAuthenticated(true);
       onSuccess(); 
-      toast.success('Login bem-sucedido!');
+      toast.success(' bem-sucedido!');
     } catch (error: any) {
-      onError(error.response?.data?.message || 'Erro desconhecido');  
+      // onError(error.response?.data?.message || 'Erro desconhecido');  
       toast.error('Credenciais inválidas');
     }
   };

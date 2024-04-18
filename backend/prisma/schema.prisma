@@ -38,19 +38,3 @@ model Movie {
 
   @@map("movies")
 }
-
-// Definição da tabela de associação entre Usuário e Filme
-// model UserMovie {
-//   id_user    Int
-//   id_movie   Int
-//   watched    Boolean
-//   favorite   Boolean
-//   want_watch Boolean
-//   created_at DateTime @default(now())
-//   updated_at DateTime @updatedAt()
-//   user       User     @relation(fields: [id_user], references: [id])
-//   movie      Movie    @relation(fields: [id_movie], references: [id])
-
-//   @@id([id_user, id_movie])
-//   @@map("users_movies")
-// }

@@ -32,14 +32,14 @@ export function SignUp() {
 
       await api.post('/users/register', data);
 
-      toast.success('Restaurante cadastrado com sucesso', {
+      toast.success('Cadastrado com sucesso', {
         action: {
           label: 'Login',
           onClick: () => navigate('/sign-in'),
         },
       })
     } catch (error) {
-      toast.error('Erro ao cadastrar restaurante.')
+      toast.error('Erro ao cadastrar.')
     }
   }
 
