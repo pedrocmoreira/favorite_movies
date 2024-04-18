@@ -26,7 +26,7 @@ export async function authenticate(
       {
         sign: {
           sub: user.id,
-          expiresIn: '5h'
+          expiresIn: '1h'
         }
       });
 

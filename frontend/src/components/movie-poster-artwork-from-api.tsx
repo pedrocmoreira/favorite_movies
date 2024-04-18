@@ -41,57 +41,58 @@ export function MoviePosterArtworkFromApi({
 }: MoviePosterArtworkProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
-  async function handleFavoriteMovie(movie_id: number){
-    try {   
+  async function handleFavoriteMovie(movie_id: number) {
+    try {
       await api('/movies/update', {
         method: 'POST',
         data: {
-          "movie_id":movie_id,
+          "movie_id": movie_id,
           "data": {
             "favorite": !movie.favorite
           }
         }
       });
-  
-      toast.success('Filme adicionado aos favoritos');
+
+
+      toast.success(!movie.favorite ? 'Filme adicionado aos favoritos' : 'Fime removido dos favoritos');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 
-  async function handleWatchedMovie(movie_id: number){
-    try {   
+  async function handleWatchedMovie(movie_id: number) {
+    try {
       await api('/movies/update', {
         method: 'POST',
         data: {
-          "movie_id":movie_id,
+          "movie_id": movie_id,
           "data": {
             "watched": !movie.watched
           }
         }
       });
-  
-      toast.success('Filme adicionado aos favoritos');
+
+      toast.success(!movie.watched ? 'Filme adicionado aos vistos' : 'Filme removido de vistos');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 
-  async function handleWantWatchMovie(movie_id: number){
-    try {   
+  async function handleWantWatchMovie(movie_id: number) {
+    try {
       await api('/movies/update', {
         method: 'POST',
         data: {
-          "movie_id":movie_id,
+          "movie_id": movie_id,
           "data": {
             "want_watch": !movie.want_watch
           }
         }
       });
-  
-      toast.success('Filme adicionado aos favoritos');
+
+      toast.success(!movie.want_watch ? 'Filme adicionado em assistir mais tarde' : 'Filme removido de assistir mais tarde');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 

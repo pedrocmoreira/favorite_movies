@@ -1,7 +1,7 @@
 import { DialogContent, DialogDescription, DialogHeader } from "./ui/dialog";
 import { Table, TableBody, TableCell, TableRow } from "./ui/table";
 import { Button } from "./ui/button";
-import { BookMarked, Bookmark, Check, Heart, HeartCrack, HeartHandshake, HeartIcon, X } from "lucide-react";
+import { Bookmark, Check, Heart, X } from "lucide-react";
 import { api, apiMovieDB } from "@/lib/axios";
 import { env } from "@/env";
 import { useEffect, useState } from "react";
@@ -66,9 +66,9 @@ export function MovieDetail({ movieId }: MovieDetail) {
 
       getMovieStatus()
   
-      toast.success('Filme adicionado aos favoritos');
+      toast.success(!movieApi?.favorite ? 'Filme adicionado aos favoritos' : 'Fime removido dos favoritos');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 
@@ -85,9 +85,9 @@ export function MovieDetail({ movieId }: MovieDetail) {
       });
       
       getMovieStatus()
-      toast.success('Filme adicionado aos favoritos');
+      toast.success(!movieApi?.watched ? 'Filme adicionado aos vistos' : 'Filme removido de vistos');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 
@@ -104,9 +104,9 @@ export function MovieDetail({ movieId }: MovieDetail) {
       });
   
       getMovieStatus()
-      toast.success('Filme adicionado aos favoritos');
+      toast.success( !movieApi?.want_watch ? 'Filme adicionado em assistir mais tarde' : 'Filme removido de assistir mais tarde');
     } catch (error) {
-      toast.error('Não foi possível adicionar o filme aos favoritos');
+      toast.error('Não foi possível completar requisição');
     }
   }
 
@@ -114,10 +114,6 @@ export function MovieDetail({ movieId }: MovieDetail) {
     getMovieDetail();
     getMovieStatus();
   }, []);
-
-  useEffect(() => {
-    getMovieStatus();
-  }, [movieApi])
 
   return (
     <DialogContent>

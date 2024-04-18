@@ -19,10 +19,6 @@ export function Sidebar({ className }: SidebarProps) {
               <Home className="mr-2 h-4 w-4"/>
               Inicio
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
-              <User className="mr-2 h-4 w-4"/>
-              Perfil
-            </Button>
           </div>
         </div>
       </div>
