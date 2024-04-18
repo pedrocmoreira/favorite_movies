@@ -71,7 +71,7 @@ export function Dashboard() {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: `${env.VITE_MOVIE_DATABASE_TOKEN}`
+        Authorization: `Bearer ${env.VITE_MOVIE_DATABASE_TOKEN}`
       }
     });
 
@@ -83,7 +83,7 @@ export function Dashboard() {
       method: 'GET',
       headers: {
         accept: 'application/json',
-        Authorization: `${env.VITE_MOVIE_DATABASE_TOKEN}`
+        Authorization: `Bearer ${env.VITE_MOVIE_DATABASE_TOKEN}`
       }
     });
 
@@ -144,7 +144,7 @@ export function Dashboard() {
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
-                        {searchResults ?
+                        {searchResults?
                           <Button variant='ghost' size='sm' onClick={handleCleanSearch}>
                             <X className="w-4 h4 text-red-500" />
                           </Button>
@@ -154,11 +154,11 @@ export function Dashboard() {
                           </Button>
                         }
                       </div>
-                    </div>
-                    {searchResults ?
+                    </div> 
+                    {search   ?
                       <>
                         <div className="grid grid-cols-5 gap-4 mt-4">
-                          {searchResults.map((movie, index) => (
+                          {searchResults && searchResults.map((movie, index) => (
                             <MoviePosterArtwork
                               key={index}
                               movie={movie}

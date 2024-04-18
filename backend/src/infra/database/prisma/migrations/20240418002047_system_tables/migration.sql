@@ -12,7 +12,8 @@ CREATE TABLE "users" (
 
 -- CreateTable
 CREATE TABLE "movies" (
-    "id" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
+    "movie_id" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "release_date" TEXT NOT NULL,
     "poster_path" TEXT NOT NULL,
