@@ -1,21 +1,36 @@
-import { MovieListProps } from "@/pages/app/dashboard";
 import { DialogContent, DialogDescription, DialogHeader } from "./ui/dialog";
 import { Table, TableBody, TableCell, TableRow } from "./ui/table";
 import { Button } from "./ui/button";
-import { Bookmark, Check, Heart } from "lucide-react";
-import { apiMovieDB } from "@/lib/axios";
+import { BookMarked, Bookmark, Check, Heart, HeartCrack, HeartHandshake, HeartIcon, X } from "lucide-react";
+import { api, apiMovieDB } from "@/lib/axios";
 import { env } from "@/env";
 import { useEffect, useState } from "react";
 import { MovieDetailDTO } from "@/dto/movie-details-dto";
 import { formatDate } from "@/utils/format-date";
+import { toast } from "sonner";
 
 export interface MovieDetail {
   movieId: number;
   open: boolean;
 }
 
+interface MovieApi {
+  id: number
+  movie_id: number
+  title: string
+  release_date: string
+  poster_path: string
+  watched: boolean
+  favorite: boolean
+  want_watch: boolean
+  created_at: string
+  updated_at: string
+  user_id: number
+}
+
 export function MovieDetail({ movieId }: MovieDetail) {
   const [movie, setMovie] = useState<MovieDetailDTO>();
+  const [movieApi, setMovieApi] = useState<MovieApi>();
 
   async function getMovieDetail() {
     const { data } = await apiMovieDB(`/movie/${movieId}?language=pt-BR`, {
@@ -29,9 +44,80 @@ export function MovieDetail({ movieId }: MovieDetail) {
     setMovie(data);
   }
 
+  async function getMovieStatus() {
+    const { data } = await api(`/movies/get?movie_id=${movieId}`, {
+      method: 'GET',
+    });
+
+    setMovieApi(data.movie);
+  }
+
+  async function handleFavoriteMovie(movie_id: number){
+    try {   
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id":movie_id,
+          "data": {
+            "favorite": !movieApi?.favorite
+          }
+        }
+      });
+
+      getMovieStatus()
+  
+      toast.success('Filme adicionado aos favoritos');
+    } catch (error) {
+      toast.error('Não foi possível adicionar o filme aos favoritos');
+    }
+  }
+
+  async function handleWatchedMovie(movie_id: number){
+    try {   
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id":movie_id,
+          "data": {
+            "watched": !movieApi?.watched
+          }
+        }
+      });
+      
+      getMovieStatus()
+      toast.success('Filme adicionado aos favoritos');
+    } catch (error) {
+      toast.error('Não foi possível adicionar o filme aos favoritos');
+    }
+  }
+
+  async function handleWantWatchMovie(movie_id: number){
+    try {   
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id":movie_id,
+          "data": {
+            "want_watch": !movieApi?.want_watch
+          }
+        }
+      });
+  
+      getMovieStatus()
+      toast.success('Filme adicionado aos favoritos');
+    } catch (error) {
+      toast.error('Não foi possível adicionar o filme aos favoritos');
+    }
+  }
+
   useEffect(() => {
     getMovieDetail();
+    getMovieStatus();
   }, []);
+
+  useEffect(() => {
+    getMovieStatus();
+  }, [movieApi])
 
   return (
     <DialogContent>
@@ -83,29 +169,68 @@ export function MovieDetail({ movieId }: MovieDetail) {
             </p>
           </div>
 
-          <div className="flex flex-row justify-center space-x-1">
-            <Button variant='ghost' size='sm' about="teste">
-              <div className="flex flex-row justify-center items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span>Adicionar aos favoritos</span>
-              </div>
-            </Button>
+          {movieApi &&
 
-            <Button variant='ghost' size='sm' about="teste">
-              <div className="flex flex-row justify-center items-center space-x-1">
-                <Bookmark className="w-4 h-4" />
-                <span>Assistir mais tarde</span>
-              </div>
-            </Button>
+            <div className="flex flex-row justify-center space-x-1">
+              <Button variant='ghost' size='sm' onClick={() => handleFavoriteMovie(movieId)}>
+                {
+                  movieApi.favorite ?
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <Heart className="w-4 h-4" fill="white"/>
+                        <span>Remover</span>
+                      </div>
+                    </>
+                    :
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <Heart className="w-4 h-4" />
+                        <span>Adicionar aos favoritos</span>
+                      </div>
+                    </>
+                }
+              </Button>
+
+              <Button variant='ghost' size='sm' onClick={() => handleWantWatchMovie(movieId)}>
+              {
+                  movieApi.want_watch ?
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <Bookmark className="w-4 h-4" fill="white"/>
+                        <span>Remover</span>
+                      </div>
+                    </>
+                    :
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <Bookmark className="w-4 h-4" />
+                        <span>Assistir mais tarde</span>
+                      </div>
+                    </>
+                }
+              </Button>
 
 
-            <Button variant='ghost' size='sm' about="teste">
-              <div className="flex flex-row justify-center items-center space-x-1">
-                <Check className="w-4 h-4" />
-                <span>Já assisti</span>
-              </div>
-            </Button>
-          </div>
+              <Button variant='ghost' size='sm' onClick={() => handleWatchedMovie(movieId)}>
+              {
+                  movieApi.watched ?
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <X className="w-4 h-4"/>
+                        <span>Não vi</span>
+                      </div>
+                    </>
+                    :
+                    <>
+                      <div className="flex flex-row justify-center items-center space-x-1">
+                        <Check className="w-4 h-4" />
+                        <span>Já vi</span>
+                      </div>
+                    </>
+                }
+              </Button>
+            </div>
+          }
         </>
       }
     </DialogContent>

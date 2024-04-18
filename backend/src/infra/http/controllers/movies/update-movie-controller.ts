@@ -20,7 +20,7 @@ export async function updateMovie(request: FastifyRequest, reply: FastifyReply) 
     await updateMovieUseCase.execute({
       user_id: Number(request.user.sign.sub),
       movie_id,
-      data, // Passe os dados para o método execute
+      data,
     });
   } catch (error) {
     throw error;

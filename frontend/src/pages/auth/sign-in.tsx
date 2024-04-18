@@ -1,25 +1,24 @@
+import { Helmet } from 'react-helmet-async';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { z } from 'zod';
 
-// import { useMutation } from '@tanstack/react-query'
-import { Helmet } from 'react-helmet-async'
-import { useForm } from 'react-hook-form'
-import { Link, useSearchParams } from 'react-router-dom'
-import { toast } from 'sonner'
-import { z } from 'zod'
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/contexts/authContext'; // Importação do contexto de autenticação
 
-// import { signIn } from '@/api/sign-in'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { api } from '@/lib/axios'
-
-const signInForm = z.object({
+const signInFormSchema = z.object({
   email: z.string().email(),
-})
+  password: z.string(),
+});
 
-type SignInForm = z.infer<typeof signInForm>
+export type SignInForm = z.infer<typeof signInFormSchema>;
 
 export function SignIn() {
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Utilização do contexto
+  const [searchParams] = useSearchParams();
 
   const {
     register,
@@ -29,43 +28,21 @@ export function SignIn() {
     defaultValues: {
       email: searchParams.get('email') ?? '',
     },
-  })
+  });
 
-  // const { mutateAsync: authenticate } = useMutation({
-  //   mutationFn: signIn,
-  // })
-
-  async function handleSignIn(data: SignInForm) {
-    try {
-
-      console.log(data);
-      const response = await api('/users/authenticate', {
-        method: 'POST',
-        headers: {
-          'Content-Type':'application/json',
-        },
-        data
-      });
-
-      console.log(response);
-
-      toast.success('Enviamos um link de autenticação para o seu e-mail', {
-        action: {
-          label: 'Reenviar',
-          onClick: () => handleSignIn(data),
-        },
-      })
-    } catch (error) {
-      toast.error('Credenciais inválidas')
-    }
-  }
+  const handleSignIn = async (data: SignInForm) => {
+    login(data, 
+      () => navigate('/'), // Navega para o dashboard após sucesso
+      (errorMessage) => alert(errorMessage) // Mostra um alerta em caso de erro
+    );
+  };
 
   return (
     <>
       <Helmet title="Login" />
       <div className="p-8">
         <Button variant="ghost" asChild className="absolute right-8 top-8">
-          <Link to="/sign-up" className="">
+          <Link to="/sign-up">
             Criar conta
           </Link>
         </Button>
@@ -80,13 +57,13 @@ export function SignIn() {
           </div>
 
           <form onSubmit={handleSubmit(handleSignIn)} className="space-y-4">
-            <div className="space-y2">
+            <div className="space-y-2">
               <Label htmlFor="email">Seu e-mail</Label>
               <Input id="email" type="email" {...register('email')} />
             </div>
 
-            <div className="space-y2">
-              <Label htmlFor="email">Sua senha</Label>
+            <div className="space-y-2">
+              <Label htmlFor="password">Sua senha</Label>
               <Input id="password" type="password" {...register('password')} />
             </div>
 
@@ -97,5 +74,5 @@ export function SignIn() {
         </div>
       </div>
     </>
-  )
+  );
 }

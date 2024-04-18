@@ -3,17 +3,17 @@ import { Helmet } from "react-helmet-async";
 import { Sidebar } from "@/components/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@radix-ui/react-tabs";
-import { Separator } from "@/components/ui/separator";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { MoviePosterArtwork } from "@/components/movie-poster-artwork";
 
 import { useEffect, useState } from "react";
 import { env } from "@/env";
-import { apiMovieDB } from "@/lib/axios";
+import { api, apiMovieDB } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Pagination } from "@/components/ui/pagination";
+import { PopularMoviesTab } from "@/components/Tabs/popular-movies-tab";
+import { NowPlayinMoviesTab } from "@/components/Tabs/now-playing-movies-tab";
+import { MoviesFromApi } from "@/components/Tabs/movies-from-api-tab";
 
 export interface Movie {
   name: string
@@ -39,9 +39,28 @@ export interface MovieListProps {
   vote_count: number
 }
 
+export interface MovieFromApi {
+  id: number
+  movie_id: number
+  title: string
+  release_date: string
+  poster_path: string
+  watched: boolean
+  favorite: boolean
+  want_watch: boolean
+  created_at: string
+  updated_at: string
+  user_id: number
+}
+
 export function Dashboard() {
+  const [activeTab, setActiveTab] = useState('films'); 
   const [topMovies, setTopMovies] = useState<MovieListProps[]>();
   const [nowPlayingMovies, setNowPlayingMovies] = useState<MovieListProps[]>();
+  const [favoriteMovies, setFavoriteMovies] = useState<MovieFromApi[]>();
+  const [watchedMovies, setWatchedMovies] = useState<MovieFromApi[]>();
+  const [watchLaterMovies, setWatchLaterMovies] = useState<MovieFromApi[]>();
+
   const [search, setSearch] = useState('');
   const [searchResults, setSearchResults] = useState<MovieListProps[] | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,13 +72,13 @@ export function Dashboard() {
   function handlePreviousPage() {
     setCurrentPage(currentPage - 1);
   }
-  
+
   // Função para retornar à página inicial
-  function resetPage() {
-    setSearch('');
-    setSearchResults(null);
-    setCurrentPage(1);
-  }
+  // function resetPage() {
+  //   setSearch('');
+  //   setSearchResults(null);
+  //   setCurrentPage(1);
+  // }
 
   function handleCleanSearch() {
     setSearch('');
@@ -90,6 +109,29 @@ export function Dashboard() {
     setNowPlayingMovies(data.results);
   }
 
+  async function getFavoritesMovies() {
+    const { data } = await api('/movies/list?favorite=true', {
+      method: 'GET',
+    });
+
+    setFavoriteMovies(data.movies);
+  }
+
+  async function getWatchedMovies() {
+    const { data } = await api('/movies/list?watched=true', {
+      method: 'GET',
+    });
+
+    setWatchedMovies(data.movies);
+  }
+
+  async function getWatchLaterMovies() {
+    const { data } = await api('/movies/list?want_watch=true', {
+      method: 'GET',
+    });
+
+    setWatchLaterMovies(data.movies);
+  }
 
   async function handleSearchMovie() {
     try {
@@ -109,7 +151,30 @@ export function Dashboard() {
   useEffect(() => {
     getTopMovies();
     getNowPlayingMovies();
-  }, [])
+    getFavoritesMovies();
+    getWatchedMovies();
+    getWatchLaterMovies()
+  }, []);
+
+  useEffect(() => {
+    switch (activeTab) {
+      case 'films':
+        getTopMovies();
+        getNowPlayingMovies();
+        break;
+      case 'favorites':
+        getFavoritesMovies();
+        break;
+      case 'watched':
+        getWatchedMovies();
+        break;
+      case 'watch-later':
+        getWatchLaterMovies();
+        break;
+      default:
+        break;
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     handleSearchMovie();
@@ -126,15 +191,15 @@ export function Dashboard() {
               <Sidebar className="hidden lg:block" />
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <div className="h-full px-4 py-6 lg:px-8">
-                  <Tabs defaultValue="films" className="h-full space-y-6">
+                  <Tabs defaultValue="films" className="h-full space-y-6"  onValueChange={setActiveTab}>
                     <div className="flex justify-between space-between  items-center">
                       <TabsList>
                         <TabsTrigger value="films" className="relative">
                           Filmes
                         </TabsTrigger>
                         <TabsTrigger value="favorites">Meus favoritos</TabsTrigger>
-                        <TabsTrigger value="watched" disabled> Assistidos </TabsTrigger>
-                        <TabsTrigger value="watch-later" disabled> Assistir mais tarde </TabsTrigger>
+                        <TabsTrigger value="watched" > Assistidos </TabsTrigger>
+                        <TabsTrigger value="watch-later" > Assistir mais tarde </TabsTrigger>
                       </TabsList>
 
                       <div className="flex flex-row items-center gap-3">
@@ -144,7 +209,7 @@ export function Dashboard() {
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
-                        {searchResults?
+                        {searchResults ?
                           <Button variant='ghost' size='sm' onClick={handleCleanSearch}>
                             <X className="w-4 h4 text-red-500" />
                           </Button>
@@ -154,8 +219,8 @@ export function Dashboard() {
                           </Button>
                         }
                       </div>
-                    </div> 
-                    {search   ?
+                    </div>
+                    {search ?
                       <>
                         <div className="grid grid-cols-5 gap-4 mt-4">
                           {searchResults && searchResults.map((movie, index) => (
@@ -184,77 +249,40 @@ export function Dashboard() {
                           value="films"
                           className="border-none p-0 outline-none"
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                              <h2 className="text-2xl font-semibold tracking-tight">
-                                Populares
-                              </h2>
-                              <p className="text-sm text-muted-foreground">
-                                Uma lista com os filmes mais populares do momento.
-                              </p>
-                            </div>
-                          </div>
-                          <Separator className="my-4" />
-                          <div className="relative">
-                            <ScrollArea>
-                              <div className="flex space-x-4 pb-4">
-                                {topMovies && topMovies.map((movie) => (
-                                  <MoviePosterArtwork
-                                    key={movie.title}
-                                    movie={movie}
-                                    className="w-[250px]"
-                                    aspectRatio="portrait"
-                                    width={250}
-                                    height={330}
-                                  />
-                                ))}
-                              </div>
-                              <ScrollBar orientation="horizontal" />
-                            </ScrollArea>
-                          </div>
-                          <div className="mt-6 space-y-1">
-                            <h2 className="text-2xl font-semibold tracking-tight">
-                              Em exibição
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                              Os filmes que estão em exibição nesse momento.
-                            </p>
-                          </div>
-                          <Separator className="my-4" />
-                          <div className="relative">
-                            <ScrollArea>
-                              <div className="flex space-x-4 pb-4">
-                                {nowPlayingMovies && nowPlayingMovies.map((movie) => (
-                                  <MoviePosterArtwork
-                                    key={movie.title}
-                                    movie={movie}
-                                    className="w-[150px]"
-                                    aspectRatio="square"
-                                    width={150}
-                                    height={150}
-                                  />
-                                ))}
-                              </div>
-                              <ScrollBar orientation="horizontal" />
-                            </ScrollArea>
-                          </div>
+                          {topMovies &&
+                            <PopularMoviesTab title="Populares" description="Os filmes mais populares do momento" popularMovies={topMovies} />
+                          }
+                          {
+                            nowPlayingMovies &&
+                            <NowPlayinMoviesTab title="Em exibição" description="Os filmes que estão em exibição nesse momento." nowPlayingMovies={nowPlayingMovies} />
+                          }
                         </TabsContent>
                         <TabsContent
                           value="favorites"
-                        // className="h-full flex-col border-none p-0 data-[state=active]:flex"
+                          className="h-full flex-col border-none p-0 data-[state=active]:flex"
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="space-y-1">
-                              <h2 className="text-2xl font-semibold tracking-tight">
-                                Seus favoritos
-                              </h2>
-                              <p className="text-sm text-muted-foreground">
-                                Esses são os filmes que você salvou como favorito.
-                              </p>
-                            </div>
-                          </div>
-                          <Separator className="my-4" />
-
+                          {
+                            favoriteMovies &&
+                            <MoviesFromApi title="Favoritos" description="Esses são os filmes que você salvou como favorito." moviesFromApi={favoriteMovies} />
+                          }
+                        </TabsContent>
+                        <TabsContent
+                          value="watched"
+                          className="border-none p-0 outline-none"
+                        >
+                          {
+                            watchedMovies && 
+                            <MoviesFromApi title="Assistidos" description="Esses são os filmes que você marcou como assistidos" moviesFromApi={watchedMovies} /> 
+                          }
+                        </TabsContent>
+                        <TabsContent
+                          value="watch-later"
+                          className="border-none p-0 outline-none"
+                        >
+                          {
+                            watchLaterMovies && 
+                            <MoviesFromApi title="Assistir mais tarde" description="Esses são os filmes que você marcou para ver mais tarde" moviesFromApi={watchLaterMovies} /> 
+                          }
                         </TabsContent>
                       </>
                     }

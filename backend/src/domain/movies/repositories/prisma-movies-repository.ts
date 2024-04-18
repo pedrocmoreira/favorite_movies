@@ -65,12 +65,18 @@ export class PrismaMoviesRepository implements MoviesRepository {
     return movie;
   }
 
-  async listByUserId(user_id: number): Promise<Movie[]> {
+  async listByUserId(user_id: number, filters?: { watched?: boolean; favorite?: boolean; want_watch?: boolean }): Promise<Movie[]> {
+    const whereClause = {
+      user_id: user_id,
+      ...(filters?.watched !== undefined && { watched: filters.watched }),
+      ...(filters?.favorite !== undefined && { favorite: filters.favorite }),
+      ...(filters?.want_watch !== undefined && { want_watch: filters.want_watch }),
+    };
+  
     const movies = await prisma.movie.findMany({
-      where: {
-        user_id: user_id,
-      },
+      where: whereClause,
     });
+  
     return movies;
   }
 

@@ -7,11 +7,11 @@ import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { api } from '@/lib/axios'
 
 const signUpForm = z.object({
-  restaurantName: z.string(),
-  managerName: z.string(),
-  phone: z.string(),
+  name: z.string(),
+  password: z.string(),
   email: z.string().email(),
 })
 
@@ -28,12 +28,14 @@ export function SignUp() {
 
   async function handleSignUp(data: SignUpForm) {
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
+      // await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      await api.post('/users/register', data);
 
       toast.success('Restaurante cadastrado com sucesso', {
         action: {
           label: 'Login',
-          onClick: () => navigate('/sign-in?email=email'),
+          onClick: () => navigate('/sign-in'),
         },
       })
     } catch (error) {
@@ -63,11 +65,11 @@ export function SignUp() {
 
           <form onSubmit={handleSubmit(handleSignUp)} className="space-y-4">
             <div className="space-y2">
-              <Label htmlFor="managerName">Seu nome</Label>
+              <Label htmlFor="name">Seu nome</Label>
               <Input
-                id="managerName"
+                id="name"
                 type="text"
-                {...register('managerName')}
+                {...register('name')}
               />
             </div>
 
@@ -77,8 +79,8 @@ export function SignUp() {
             </div>
 
             <div className="space-y2">
-              <Label htmlFor="phone">Seu celular</Label>
-              <Input id="phone" type="tel" {...register('phone')} />
+              <Label htmlFor="password">Sua senha</Label>
+              <Input id="password" type="password" {...register('password')} />
             </div>
 
             <Button disabled={isSubmitting} className="w-full" type="submit">

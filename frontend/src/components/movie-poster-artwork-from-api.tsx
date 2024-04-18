@@ -11,7 +11,9 @@ import {
   // ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/context-menu"
-import { MovieListProps } from "@/pages/app/dashboard"
+import { MovieFromApi } from "@/pages/app/dashboard"
+
+import { toast } from 'sonner';
 
 import { Bookmark, Check, Heart, Search } from "lucide-react";
 import { Dialog, DialogTrigger } from "./ui/dialog";
@@ -20,17 +22,16 @@ import { useState } from "react";
 import { MovieDetail } from "./movie-detail";
 import { formatDate } from "@/utils/format-date";
 import { api } from "@/lib/axios";
-import { toast } from "sonner";
 
 
 interface MoviePosterArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  movie: MovieListProps
+  movie: MovieFromApi
   aspectRatio?: "portrait" | "square"
   width?: number
   height?: number
 }
 
-export function MoviePosterArtwork({
+export function MoviePosterArtworkFromApi({
   movie,
   aspectRatio = "portrait",
   width,
@@ -47,7 +48,7 @@ export function MoviePosterArtwork({
         data: {
           "movie_id":movie_id,
           "data": {
-            "favorite": true
+            "favorite": !movie.favorite
           }
         }
       });
@@ -65,7 +66,7 @@ export function MoviePosterArtwork({
         data: {
           "movie_id":movie_id,
           "data": {
-            "watched": true
+            "watched": !movie.watched
           }
         }
       });
@@ -83,7 +84,7 @@ export function MoviePosterArtwork({
         data: {
           "movie_id":movie_id,
           "data": {
-            "want_watch": true
+            "want_watch": !movie.want_watch
           }
         }
       });
@@ -107,15 +108,15 @@ export function MoviePosterArtwork({
           </div>
         </ContextMenuTrigger>
         <ContextMenuContent className="w-40">
-          <ContextMenuItem className="gap-2" onClick={() => handleFavoriteMovie(movie.id)}>
+          <ContextMenuItem className="gap-2" onClick={() => handleFavoriteMovie(movie.movie_id)}>
             <Heart className="h-4 w-4" />
             Favoritos
           </ContextMenuItem>
-          <ContextMenuItem className="gap-2" onClick={() => handleWantWatchMovie(movie.id)}>
+          <ContextMenuItem className="gap-2" onClick={() => handleWantWatchMovie(movie.movie_id)}>
             <Bookmark className="h-4 w-4" />
             Mais tarde
           </ContextMenuItem>
-          <ContextMenuItem className="gap-2" onClick={() => handleWatchedMovie(movie.id)}>
+          <ContextMenuItem className="gap-2" onClick={() => handleWatchedMovie(movie.movie_id)}>
             <Check className="h-4 w-4" />
             Já vi
           </ContextMenuItem>
@@ -133,7 +134,7 @@ export function MoviePosterArtwork({
               </Button>
             </DialogTrigger>
 
-            <MovieDetail open={isDetailsOpen} movieId={movie.id} />
+            <MovieDetail open={isDetailsOpen} movieId={movie.movie_id} />
           </Dialog>
         </div>
         <p className="text-xs text-muted-foreground">Data de lançamento: {movie.release_date ? formatDate(movie.release_date) : 'Sem informações'}</p>

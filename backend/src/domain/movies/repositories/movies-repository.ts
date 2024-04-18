@@ -11,6 +11,6 @@ export interface MoviesRepository {
   updateByUserAndMovieId({user_id, movie_id, updates}: UpdateProps):Promise<Movie | null>
   findById(movie_id: number): Promise<Movie | null>
   findByMovieId(movie_id: number): Promise<Movie | null>
-  listByUserId(user_id: number): Promise<Movie[]>;
+  listByUserId(user_id: number, filters?: { watched?: boolean; favorite?: boolean; want_watch?: boolean }): Promise<Movie[]>;
   findByUserAndMovieId(movie_id: number, user_id: number): Promise<Movie | null>
 }
