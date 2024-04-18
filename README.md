@@ -22,6 +22,7 @@ git clone https://github.com/pedrocmoreira/favorite_movies.git
 cd favorite_movies
 cd backend 
 npm install
+npx migrate dev
 npm run dev
 
 --frontend
