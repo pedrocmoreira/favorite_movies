@@ -30,6 +30,8 @@ interface MoviePosterArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   height?: number
 }
 
+
+
 export function MoviePosterArtwork({
   movie,
   aspectRatio = "portrait",
@@ -39,6 +41,61 @@ export function MoviePosterArtwork({
   ...props
 }: MoviePosterArtworkProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+
+  async function handleFavoriteMovie(movie_id: number) {
+    try {
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id": movie_id,
+          "data": {
+            "favorite": true
+          }
+        }
+      });
+
+
+      toast.success('Filme adicionado aos favoritos');
+    } catch (error) {
+      toast.error('Não foi possível completar requisição');
+    }
+  }
+
+  async function handleWatchedMovie(movie_id: number) {
+    try {
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id": movie_id,
+          "data": {
+            "watched": true
+          }
+        }
+      });
+
+      toast.success('Filme adicionado aos vistos');
+    } catch (error) {
+      toast.error('Não foi possível completar requisição');
+    }
+  }
+
+  async function handleWantWatchMovie(movie_id: number) {
+    try {
+      await api('/movies/update', {
+        method: 'POST',
+        data: {
+          "movie_id": movie_id,
+          "data": {
+            "want_watch": true
+          }
+        }
+      });
+
+      toast.success('Filme adicionado em assistir mais tarde');
+    } catch (error) {
+      toast.error('Não foi possível completar requisição');
+    }
+  }
 
   return (
     <div className={cn("space-y-3", className)} {...props}>
@@ -52,6 +109,20 @@ export function MoviePosterArtwork({
             />
           </div>
         </ContextMenuTrigger>
+      <ContextMenuContent className="w-40">
+        <ContextMenuItem className="gap-2" onClick={() => handleFavoriteMovie(movie.id)}>
+          <Heart className="h-4 w-4" />
+          Favoritos
+        </ContextMenuItem>
+        <ContextMenuItem className="gap-2" onClick={() => handleWantWatchMovie(movie.id)}>
+          <Bookmark className="h-4 w-4" />
+          Mais tarde
+        </ContextMenuItem>
+        <ContextMenuItem className="gap-2" onClick={() => handleWatchedMovie(movie.id)}>
+          <Check className="h-4 w-4" />
+          Já vi
+        </ContextMenuItem>
+      </ContextMenuContent>
       </ContextMenu>
 
       <div className="space-y-1 text-sm">

@@ -49,6 +49,7 @@ export function MovieDetail({ movieId }: MovieDetail) {
       method: 'GET',
     });
 
+
     setMovieApi(data.movie);
   }
 

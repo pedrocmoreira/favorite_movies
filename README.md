@@ -8,11 +8,13 @@
 
 Para instalar o Favorite Movies, siga estas etapas:
 
+- Adicione as variáveis de ambiente para o frontend (.env.local) e para o backend (.env)
+- Inscreva-se no The movie Database para ter acesso a um access_token.
+
 Linux e macOS:
 ```
 git clone https://github.com/pedrocmoreira/favorite_movies.git
 cd favorite_movies
-npm install
 docker compose up -d
 
 # ou
