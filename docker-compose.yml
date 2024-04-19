@@ -1,16 +1,19 @@
 version: '3.8'
 
 services:
-  db:
+  postgres:
     image: bitnami/postgresql:latest
+    container_name: postgres
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=Favorite@movies!
-      - POSTGRES_DB=favorite_movies_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mydb
     volumes:
       - postgres_data:/bitnami/postgresql
+    networks:
+    - movie-network
 
   backend:
     build:
@@ -21,7 +24,9 @@ services:
     env_file: 
       - ./backend/.env  
     depends_on:
-      - db
+      - postgres
+    networks:
+      - movie-network
 
   frontend:
     build:
@@ -33,6 +38,12 @@ services:
       - ./frontend/.env.local 
     depends_on:
       - backend
+
+networks:
+  movie-network:
+    name: movie-network
+    driver: bridge
+
 
 volumes:
   postgres_data:

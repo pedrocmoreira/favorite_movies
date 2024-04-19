@@ -11,7 +11,7 @@ import { api } from '@/lib/axios'
 
 const signUpForm = z.object({
   name: z.string(),
-  password: z.string(),
+  password: z.string().min(6),
   email: z.string().email(),
 })
 
@@ -30,7 +30,10 @@ export function SignUp() {
     try {
       // await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      await api.post('/users/register', data);
+      await api('/users/register', {
+        method: 'POST',  
+        data
+      });
 
       toast.success('Cadastrado com sucesso', {
         action: {
