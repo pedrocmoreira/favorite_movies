@@ -38,7 +38,6 @@ Windows:
 ```
 git clone https://github.com/pedrocmoreira/favorite_movies.git
 cd favorite_movies
-npm install
 docker compose up -d
 
 # ou
