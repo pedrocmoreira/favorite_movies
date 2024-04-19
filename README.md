@@ -6,10 +6,7 @@
 
 ## 🚀 Instalando o Favorite Movies
 
-Para instalar o Favorite Movies, siga estas etapas:
-
-- Adicione as variáveis de ambiente para o frontend (.env.local) e para o backend (.env)
-- Inscreva-se no The movie Database para ter acesso a um access_token.
+Para instalar o Favorite Movies, siga estas etapas
 
 Linux e macOS:
 ```
@@ -61,7 +58,8 @@ npm run dev
 Para usar o Favorite Movies, siga estas etapas:
 
 - Executar o comando do docker para que o banco seja criado (necessário docker instalado na máquina)
-- Configurar as credenciais de desenvolvedor do discord no arquivo .env.example
+- Adicione as variáveis de ambiente para o frontend (.env.local) e para o backend (.env)
+- Inscreva-se no The movie Database para ter acesso a um access_token.
 
 ## 🤝 Colaboradores
 Este projeto foi codificado por: 
